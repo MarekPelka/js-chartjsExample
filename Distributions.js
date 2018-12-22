@@ -63,10 +63,10 @@ function calculateDistribution(fun) {
     for (let iter = -1000; iter < 1000; iter++) {
         var xSize = (1 / 100)
         x = iter * xSize
-        y = fun(x)
+        y = math.integrate(fun, -1000 * xSize, x)
 
         sum += y * xSize
-        listData.push({ x: x, y: y })
+        listData.push({ x: x, y: 1 - y })
     }
     return { data: listData, sum: sum }
 }
@@ -125,3 +125,72 @@ function maxwell(x) {
     } else
         return null
 }
+
+
+
+/**
+ * Calculate the numeric integration of a function
+ * @param {Function} f
+ * @param {number} start
+ * @param {number} end
+ * @param {number} [step=0.01]
+ */
+function integrate (f, start, end, step) {
+    let total = 0
+    step = step || 0.01
+    for (let x = start; x < end; x += step) {
+        total += f(x + step / 2) * step
+    }
+    return total
+}
+
+/**
+ * A transformation for the integrate function. This transformation will be
+ * invoked when the function is used via the expression parser of math.js.
+ *
+ * Syntax:
+ *
+ *     integrate(integrand, variable, start, end)
+ *     integrate(integrand, variable, start, end, step)
+ *
+ * Usage:
+ *
+ *     math.eval('integrate(2*x, x, 0, 2)')
+ *     math.eval('integrate(2*x, x, 0, 2, 0.01)')
+ *
+ * @param {Array.<math.expression.node.Node>} args
+ *            Expects the following arguments: [f, x, start, end, step]
+ * @param {Object} math
+ * @param {Object} [scope]
+ */
+integrate.transform = function (args, math, scope) {
+    // determine the variable name
+    if (!args[1].isSymbolNode) {
+        throw new Error('Second argument must be a symbol')
+    }
+    const variable = args[1].name
+
+    // evaluate start, end, and step
+    const start = args[2].compile().eval(scope)
+    const end = args[3].compile().eval(scope)
+    const step = args[4] && args[4].compile().eval(scope) // step is optional
+
+    // create a new scope, linked to the provided scope. We use this new scope
+    // to apply the variable.
+    const fnScope = Object.create(scope)
+
+    // construct a function which evaluates the first parameter f after applying
+    // a value for parameter x.
+    const fnCode = args[0].compile()
+    const f = function (x) {
+        fnScope[variable] = x
+        return fnCode.eval(fnScope)
+    }
+
+    // execute the integration
+    return integrate(f, start, end, step)
+}
+
+math.import({
+    integrate: integrate
+})
