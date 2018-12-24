@@ -96,8 +96,8 @@ function addNewDataset(value, key, map) {
 ////////////////////////// 
 
 function gaussian(x) {
-    var squaredSigma = Math.pow(sigma, 2)
-    return (1 / Math.sqrt(2 * Math.PI * squaredSigma)) * Math.exp(-Math.pow(x - mu, 2) / (2 * squaredSigma))
+    var sigmaSquared = Math.pow(sigma, 2)
+    return (1 / Math.sqrt(2 * Math.PI * sigmaSquared)) * Math.exp(-Math.pow(x - mu, 2) / (2 * sigmaSquared))
 }
 
 function laplace(x) {
@@ -110,8 +110,8 @@ function laplace(x) {
 
 function rayleigh(x) {
     if (x >= 0) {
-        var squaredSigma = Math.pow(sigma, 2)
-        return x / squaredSigma * Math.exp(-Math.pow(x, 2) / (2 * squaredSigma))
+        var sigmaSquared = Math.pow(sigma, 2)
+        return x / sigmaSquared * Math.exp(-Math.pow(x, 2) / (2 * sigmaSquared))
     } else {
         return null
     }
@@ -126,7 +126,10 @@ function maxwell(x) {
         return null
 }
 
-
+/**
+ * * Integrate function taken from:
+ * * http://mathjs.org/examples/advanced/custom_argument_parsing.js.html
+ */
 
 /**
  * Calculate the numeric integration of a function
@@ -135,7 +138,7 @@ function maxwell(x) {
  * @param {number} end
  * @param {number} [step=0.01]
  */
-function integrate (f, start, end, step) {
+function integrate(f, start, end, step) {
     let total = 0
     step = step || 0.01
     for (let x = start; x < end; x += step) {
@@ -163,7 +166,7 @@ function integrate (f, start, end, step) {
  * @param {Object} math
  * @param {Object} [scope]
  */
-integrate.transform = function (args, math, scope) {
+integrate.transform = function(args, math, scope) {
     // determine the variable name
     if (!args[1].isSymbolNode) {
         throw new Error('Second argument must be a symbol')
@@ -182,7 +185,7 @@ integrate.transform = function (args, math, scope) {
     // construct a function which evaluates the first parameter f after applying
     // a value for parameter x.
     const fnCode = args[0].compile()
-    const f = function (x) {
+    const f = function(x) {
         fnScope[variable] = x
         return fnCode.eval(fnScope)
     }
@@ -191,6 +194,8 @@ integrate.transform = function (args, math, scope) {
     return integrate(f, start, end, step)
 }
 
+// import the function into math.js. Raw functions must be imported in the
+// math namespace, they can't be used via `eval(scope)`.
 math.import({
     integrate: integrate
 })
