@@ -10,8 +10,8 @@
         "postinstall": "install-app-deps"
     },
     "devDependencies": {
-        "electron": "^1.4.1",
-        "electron-builder": "20.2.0",
-        "electron-reload": "^1.2.2"
+        "electron": "^1.8.8",
+        "electron-builder": "^20.38.4",
+        "electron-reload": "^1.4.0"
     }
 }
