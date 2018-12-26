@@ -13,10 +13,51 @@
 
     <script src="Distributions.js"></script>
 
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+        crossorigin="anonymous">
+    <style type="text/css">
+        input {
+            float: right;
+            clear: both;
+        }
+
+        table {
+            margin: 5px;
+        }
+    </style>
+
 </head>
 
 <body>
-    <canvas id=canvas1></canvas>
+    <table style="width:100%; margin:5px">
+        <tr>
+            <td>
+                <canvas id=canvas1></canvas>
+            </td>
+        </tr>
+        <tr>
+            <table style="width:100%" id=controlTable>
+                <tr id=inputs>
+                    <td id=mu>mu: </td>
+                    <td id=b>B: </td>
+                    <td id=sigma>sigma: </td>
+                    <td id=a>a: </td>
+                </tr>
+                <tr>
+                    <td id=xMin>xMin: </td>
+                    <td id=xMax>xMax: </td>
+                    <td id=xStep>xStep: </td>
+                </tr>
+                <tr>
+                </tr>
+                <tr>
+                    <td>Distribution</td>
+                    <td>Integral</td>
+                </tr>
+            </table>
+        </tr>
+    </table>
+
     <!-- <canvas id=canvas2></canvas> -->
 </body>
 
