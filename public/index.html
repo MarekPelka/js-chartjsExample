@@ -6,12 +6,19 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>SOIB 6</title>
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/p5.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/addons/p5.dom.min.js"></script>
     <script src="https://unpkg.com/mathjs@5.4.0/dist/math.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
 
+    <script src="Utils.js"></script>
+    <script src="Gui.js"></script>
+    <script src="DualProbability.js"></script>
+    <script src="Distribution.js"></script>
     <script src="Distributions.js"></script>
+    
+    
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
         crossorigin="anonymous">
@@ -32,28 +39,36 @@
     <table style="width:100%; margin:5px">
         <tr>
             <td>
-                <canvas id=canvas1></canvas>
+                <canvas id=chartDistribution></canvas>
+            </td>
+            <td>
+                <canvas id=QBERChart></canvas>
             </td>
         </tr>
         <tr>
             <table style="width:100%" id=controlTable>
-                <tr id=inputs>
-                    <td id=mu>mu: </td>
-                    <td id=b>B: </td>
-                    <td id=sigma>sigma: </td>
-                    <td id=a>a: </td>
+                <tr>
+                    <td id=distributionSelector></td>
+                    <td id=recalculate></td>
                 </tr>
                 <tr>
                     <td id=xMin>xMin: </td>
                     <td id=xMax>xMax: </td>
                     <td id=xStep>xStep: </td>
                 </tr>
-                <tr>
+                <tr id=inputs>
+                    <!-- <td id=mu>mu: </td>
+                    <td id=b>B: </td>
+                    <td id=sigma>sigma: </td>
+                    <td id=a>a: </td> -->
+                </tr>
+
+                <!-- <tr>
                 </tr>
                 <tr>
                     <td>Distribution</td>
                     <td>Integral</td>
-                </tr>
+                </tr> -->
             </table>
         </tr>
     </table>
