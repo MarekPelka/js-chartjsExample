@@ -17,6 +17,7 @@ class Distribution {
     }
 
     calculate(xMin, xMax, xStep) {
+        this.dataset = []
         var x = 0
         var integral = 0
         while (x > xMin) {

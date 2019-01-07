@@ -1,9 +1,12 @@
 class DualProbability {
     constructor(distribution, offset) {
+        this.name = distribution.name
         // this.zeroDistribution = Object.assign({}, distribution);
         this.zeroDistribution = Distribution.copy(distribution);
+        this.zeroDistribution.name += " Zero"
         // this.oneDistribution = Object.assign({}, distribution);
         this.oneDistribution =  Distribution.copy(distribution);
+        this.oneDistribution.name += " One"
         this.offset = offset;
         Object.keys(offset).forEach(item => {
             this.oneDistribution[item] += offset[item]
@@ -25,7 +28,7 @@ class DualProbability {
         while (Math.abs(diff) > accuracy) {
             x += xStep
             diff = this.zeroDistribution.fn(x) - this.oneDistribution.fn(x)
-            console.log("Diff: " + diff + "; X: " + x + "; step: " + xStep)
+            // console.log("Diff: " + diff + "; X: " + x + "; step: " + xStep)
             
             if ((diff < 0 && wasPositive) || ((diff > 0 && !wasPositive))) {
                 xStep *= -0.1

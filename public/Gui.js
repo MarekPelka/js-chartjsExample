@@ -50,6 +50,9 @@ class Gui {
         this.xStepInput = createInput(this.xStep.toString())
         this.xStepInput.parent('xStep')
 
+        this.thresholdText = createElement('pre')
+        this.thresholdText.parent('threshold')
+
         this.recalculateButton = createButton('recalculate')
         this.recalculateButton.parent('recalculate')
     }
@@ -73,11 +76,17 @@ class Gui {
     addDistributionInputs(distribution) {
         this.removeOldData()
         this.removeOldInputs()
-        Object.keys(distribution.inputs).forEach(input => {
-            this.distributionInputs[input + 'Parent'] = createElement('td', input)
-            this.distributionInputs[input + 'Parent'].parent('inputs')
-            this.distributionInputs[input] = createInput(distribution[input].toString())
-            this.distributionInputs[input].parent(this.distributionInputs[input + 'Parent'])
+        Object.keys(distribution.zeroDistribution.inputs).forEach(input => {
+            this.distributionInputs[input + 'Zero' + 'Parent'] = createElement('td', input + ' Zero')
+            this.distributionInputs[input + 'Zero' + 'Parent'].parent('inputs')
+            this.distributionInputs[input + 'Zero'] = createInput(distribution.zeroDistribution[input].toString())
+            this.distributionInputs[input + 'Zero'].parent(this.distributionInputs[input  + 'Zero' + 'Parent'])            
+        });
+        Object.keys(distribution.oneDistribution.inputs).forEach(input => {
+            this.distributionInputs[input + 'One' + 'Parent'] = createElement('td', input + ' One')
+            this.distributionInputs[input + 'One' + 'Parent'].parent('inputs')
+            this.distributionInputs[input + 'One'] = createInput(distribution.oneDistribution[input].toString())
+            this.distributionInputs[input + 'One'].parent(this.distributionInputs[input  + 'One' + 'Parent'])
         });
     }
 
@@ -116,11 +125,21 @@ class Gui {
 
     recalculate() {
         this.removeOldData()
+        this.xMin = parseFloat(this.xMinInput.value())
+        this.xMax = parseFloat(this.xMaxInput.value())
+        this.xStep = parseFloat(this.xStepInput.value())
+        Object.keys(gui.distributionInputs).filter(el => el.endsWith('Zero')).forEach(input => {
+            this.currentDistribution.zeroDistribution[input.slice(0, -4)] = parseFloat(this.distributionInputs[input].value())
+        })
+        Object.keys(gui.distributionInputs).filter(el => el.endsWith('One')).forEach(input => {
+            this.currentDistribution.oneDistribution[input.slice(0, -3)] = parseFloat(this.distributionInputs[input].value())
+        })
         this.currentDistribution.recalculate(this.xMin, this.xMax, this.xStep)
         this.addNewDataset(this.currentDistribution.zeroDistribution)
         this.addNewDataset(this.currentDistribution.oneDistribution)
         var threshold = this.currentDistribution.getThreshold()
-        console.log(threshold)
+        this.thresholdText.html(threshold)
+        // console.log(threshold)
         // One day this will work
         // this.getDistributionChart().lineAtIndex.push(threshold)
         // this.getDistributionChart().update()

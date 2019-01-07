@@ -27,8 +27,8 @@ function draw() {
     if (first) {
         gaussian = new Distribution("gaussian", gaussianfn, {sigma : 1, mu : 0})
         laplace = new Distribution("laplace", laplacefn, {b : 1, mu : 1})
-        gui.addDistribution(gaussian)
-        gui.addDistribution(laplace)
+        gui.addDistribution(new DualProbability(gaussian, {mu : 1}))
+        gui.addDistribution(new DualProbability(laplace, {mu : 1}))
 
         gui.setRecalculateAction(recalculateAction)
         gui.init()
@@ -51,8 +51,8 @@ function draw() {
 }
 
 function recalculateAction() {
-    var currentDistribution = gui.getSelectedDistribution()
-    gui.currentDistribution = new DualProbability(currentDistribution, {mu : 1})
+    gui.currentDistribution = gui.getSelectedDistribution()
+    // gui.currentDistribution = new DualProbability(currentDistribution, {mu : 1})
     gui.recalculate()
 }
 
