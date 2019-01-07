@@ -1,12 +1,13 @@
 class DualProbability {
     constructor(distribution, offset) {
         this.name = distribution.name
-        // this.zeroDistribution = Object.assign({}, distribution);
+
         this.zeroDistribution = Distribution.copy(distribution);
         this.zeroDistribution.name += " Zero"
-        // this.oneDistribution = Object.assign({}, distribution);
+
         this.oneDistribution =  Distribution.copy(distribution);
         this.oneDistribution.name += " One"
+
         this.offset = offset;
         Object.keys(offset).forEach(item => {
             this.oneDistribution[item] += offset[item]

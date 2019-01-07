@@ -42,7 +42,7 @@ class Gui {
         this.disSelector = createSelect();
         this.disSelector.parent('distributionSelector')
         this.disSelector.changed(this.selectDistributionEvent)
-        // this.disSelector.option('grape');
+
         this.xMinInput = createInput(this.xMin.toString())
         this.xMinInput.parent('xMin')
         this.xMaxInput = createInput(this.xMax.toString())
@@ -139,10 +139,6 @@ class Gui {
         this.addNewDataset(this.currentDistribution.oneDistribution)
         var threshold = this.currentDistribution.getThreshold()
         this.thresholdText.html(threshold)
-        // console.log(threshold)
-        // One day this will work
-        // this.getDistributionChart().lineAtIndex.push(threshold)
-        // this.getDistributionChart().update()
     }
 
     addNewDataset(distribution) {
