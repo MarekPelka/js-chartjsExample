@@ -18,6 +18,19 @@ class Gui {
                 }
             },
         })
+
+        window['ber'] = new Chart(document.getElementById('Q_BER_Chart'), {
+            type: 'line',
+            data: {},
+            options: {
+                scales: {
+                    xAxes: [{
+                        type: 'linear',
+                        position: 'bottom'
+                    }]
+                }
+            },
+        })
         this.addDefaultInputs()
         this.chartColors = {
             red: 'rgb(255, 99, 132)',

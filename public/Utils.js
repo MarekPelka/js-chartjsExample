@@ -10,11 +10,11 @@
  * @param {number} end
  * @param {number} [step=0.01]
  */
-function integrate(f, start, end, step) {
+function integrate(obj, start, end, step) {
     let total = 0
     step = step || 0.01
     for (let x = start; x < end; x += step) {
-        total += f(x + step / 2) * step
+        total += obj.fn(x + step / 2) * step
     }
     return total
 }
