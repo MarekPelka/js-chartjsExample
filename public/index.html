@@ -34,19 +34,20 @@
 </head>
 
 <body>
-    <table style="width:100%; margin:5px">
+    <table style="width:80%; margin:20px">
         <tr>
             <td>
                 <canvas id=chartDistribution></canvas>
             </td>
-            <td>
+            <!--<td>
                 <canvas id=Q_BER_Chart></canvas>
-            </td>
+            </td>-->
         </tr>
         <tr>
-            <table style="width:100%" id=controlTable>
+            <table style="width:90%" id=controlTable>
                 <tr>
                     <td id=distributionSelector></td>
+                    <td id=qInput>Q: </td>
                     <td id=recalculate></td>
                 </tr>
                 <tr>
@@ -56,9 +57,13 @@
                 </tr>
                 <tr id=inputs>
                 </tr>
-                <td>Threshold: </td>
-                <td id=threshold></td>
                 <tr>
+                    <td>Threshold: </td>
+                    <td id=threshold></td>
+                </tr>
+                <tr>
+                    <td>BER: </td>
+                    <td id=ber></td>
                 </tr>
             </table>
         </tr>

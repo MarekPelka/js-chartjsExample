@@ -1,25 +1,13 @@
-class Gui { 
-    
+class Gui {
+
     constructor() {
-        this.xMin = -10
-        this.xMax = 10
-        this.xStep = 1 / 10
+        this.xMin = -1
+        this.xMax = 2
+        this.xStep = 1 / 100
+        this.q = 1
 
         noCanvas();
         window['chartDistribution'] = new Chart(document.getElementById('chartDistribution'), {
-            type: 'line',
-            data: {},
-            options: {
-                scales: {
-                    xAxes: [{
-                        type: 'linear',
-                        position: 'bottom'
-                    }]
-                }
-            },
-        })
-
-        window['ber'] = new Chart(document.getElementById('Q_BER_Chart'), {
             type: 'line',
             data: {},
             options: {
@@ -46,7 +34,7 @@ class Gui {
         this.distribution = []
         this.currentDistribution = {}
     }
-    
+
     getDistributionChart() {
         return window['chartDistribution'];
     }
@@ -68,13 +56,19 @@ class Gui {
 
         this.recalculateButton = createButton('recalculate')
         this.recalculateButton.parent('recalculate')
+
+        this.qInput = createInput(this.q.toString())
+        this.qInput.parent('qInput')
+
+        this.berText = createElement('pre')
+        this.berText.parent('ber')
     }
 
     selectDistributionEvent() {
         var distributionName = this.value();
         console.log(this)
         // TODO: fixme!
-        gui.addDistributionInputs(gui.getDistribution(distributionName))
+        // gui.addDistributionInputs(gui.getDistribution(distributionName))
     }
 
     addDistribution(distribution) {
@@ -86,22 +80,22 @@ class Gui {
         return this.distribution.find(dis => dis.name === name)
     }
 
-    addDistributionInputs(distribution) {
-        this.removeOldData()
-        this.removeOldInputs()
-        Object.keys(distribution.zeroDistribution.inputs).forEach(input => {
-            this.distributionInputs[input + 'Zero' + 'Parent'] = createElement('td', input + ' Zero')
-            this.distributionInputs[input + 'Zero' + 'Parent'].parent('inputs')
-            this.distributionInputs[input + 'Zero'] = createInput(distribution.zeroDistribution[input].toString())
-            this.distributionInputs[input + 'Zero'].parent(this.distributionInputs[input  + 'Zero' + 'Parent'])            
-        });
-        Object.keys(distribution.oneDistribution.inputs).forEach(input => {
-            this.distributionInputs[input + 'One' + 'Parent'] = createElement('td', input + ' One')
-            this.distributionInputs[input + 'One' + 'Parent'].parent('inputs')
-            this.distributionInputs[input + 'One'] = createInput(distribution.oneDistribution[input].toString())
-            this.distributionInputs[input + 'One'].parent(this.distributionInputs[input  + 'One' + 'Parent'])
-        });
-    }
+    // addDistributionInputs(distribution) {
+    //     this.removeOldData()
+    //     this.removeOldInputs()
+    //     Object.keys(distribution.zeroDistribution.inputs).forEach(input => {
+    //         this.distributionInputs[input + 'Zero' + 'Parent'] = createElement('td', input + ' Zero')
+    //         this.distributionInputs[input + 'Zero' + 'Parent'].parent('inputs')
+    //         this.distributionInputs[input + 'Zero'] = createInput(distribution.zeroDistribution[input].toString())
+    //         this.distributionInputs[input + 'Zero'].parent(this.distributionInputs[input  + 'Zero' + 'Parent'])            
+    //     });
+    //     Object.keys(distribution.oneDistribution.inputs).forEach(input => {
+    //         this.distributionInputs[input + 'One' + 'Parent'] = createElement('td', input + ' One')
+    //         this.distributionInputs[input + 'One' + 'Parent'].parent('inputs')
+    //         this.distributionInputs[input + 'One'] = createInput(distribution.oneDistribution[input].toString())
+    //         this.distributionInputs[input + 'One'].parent(this.distributionInputs[input  + 'One' + 'Parent'])
+    //     });
+    // }
 
     removeOldInputs() {
         // Clear inputs
@@ -120,7 +114,7 @@ class Gui {
     getColorBackToPool() {
         if (this.getDistributionChart().data.datasets[0])
             this.chartColors[Math.random()] = this.getDistributionChart().data.datasets[0].backgroundColor
-        if (this.getDistributionChart().data.datasets[1]) 
+        if (this.getDistributionChart().data.datasets[1])
             this.chartColors[Math.random()] = this.getDistributionChart().data.datasets[1].backgroundColor
     }
 
@@ -133,7 +127,7 @@ class Gui {
     }
 
     setRecalculateAction(event) {
-        this.recalculateButton.mousePressed(event); 
+        this.recalculateButton.mousePressed(event);
     }
 
     recalculate() {
@@ -141,42 +135,61 @@ class Gui {
         this.xMin = parseFloat(this.xMinInput.value())
         this.xMax = parseFloat(this.xMaxInput.value())
         this.xStep = parseFloat(this.xStepInput.value())
-        Object.keys(gui.distributionInputs).filter(el => el.endsWith('Zero')).forEach(input => {
-            this.currentDistribution.zeroDistribution[input.slice(0, -4)] = parseFloat(this.distributionInputs[input].value())
-        })
-        Object.keys(gui.distributionInputs).filter(el => el.endsWith('One')).forEach(input => {
-            this.currentDistribution.oneDistribution[input.slice(0, -3)] = parseFloat(this.distributionInputs[input].value())
-        })
+        // Object.keys(gui.distributionInputs).filter(el => el.endsWith('Zero')).forEach(input => {
+        //     this.currentDistribution.zeroDistribution[input.slice(0, -4)] = parseFloat(this.distributionInputs[input].value())
+        // })
+        // Object.keys(gui.distributionInputs).filter(el => el.endsWith('One')).forEach(input => {
+        //     this.currentDistribution.oneDistribution[input.slice(0, -3)] = parseFloat(this.distributionInputs[input].value())
+        // })
+        this.currentDistribution.zeroDistribution.sdFromQ(parseFloat(this.qInput.value()))
+        this.currentDistribution.oneDistribution.sdFromQ(parseFloat(this.qInput.value()))
+        
         this.currentDistribution.recalculate(this.xMin, this.xMax, this.xStep)
         this.addNewDataset(this.currentDistribution.zeroDistribution)
         this.addNewDataset(this.currentDistribution.oneDistribution)
-        var threshold = this.currentDistribution.getThreshold()
-        this.thresholdText.html(threshold)
+        // var threshold = this.currentDistribution.getThreshold()
+        this.currentDistribution.calculateErrorSurface(this.xMin, this.xMax, this.xStep)
+        this.addNewFilledDataset(this.currentDistribution.errorDataset)
+        this.thresholdText.html(this.currentDistribution.threshold)
+        this.berText.html(this.currentDistribution.getBER())
     }
 
     addNewDataset(distribution) {
-            // select random color and remove it from color list to make sure that all series have different colors
-            var colorNames = Object.keys(this.chartColors);
-            var colorName = colorNames[Math.floor(Math.random() * colorNames.length)]
-            var color = this.chartColors[colorName]
-            delete this.chartColors[colorName]
-        
-            var newDataset = {
-                label: distribution.name,
-                data: distribution.dataset,
-                fill: false,
-                borderColor: color,
-                backgroundColor: color,
-                borderWidth: 3,
-                pointRadius: 0
-            }
-            this.getDistributionChart().data.datasets.push(newDataset)
-            this.getDistributionChart().update()
+        // select random color and remove it from color list to make sure that all series have different colors
+        var colorNames = Object.keys(this.chartColors);
+        var colorName = colorNames[Math.floor(Math.random() * colorNames.length)]
+        var color = this.chartColors[colorName]
+        delete this.chartColors[colorName]
+
+        var newDataset = {
+            label: distribution.name,
+            data: distribution.dataset,
+            fill: false,
+            borderColor: color,
+            backgroundColor: color,
+            borderWidth: 3,
+            pointRadius: 2
         }
+        this.getDistributionChart().data.datasets.push(newDataset)
+        this.getDistributionChart().update()
+    }
+
+    addNewFilledDataset(dataset) {
+        var newDataset = {
+            label: 'Error',
+            data: dataset,
+            fill: true,
+            borderColor: 'rgb(255, 99, 132)',
+            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+            borderWidth: 1,
+            pointRadius: 0
+        }
+        this.getDistributionChart().data.datasets.push(newDataset)
+        this.getDistributionChart().update()
+    }
 
     init() {
-        this.addDistributionInputs(this.getDistribution(this.disSelector.value()))
+        // this.addDistributionInputs(this.getDistribution(this.disSelector.value()))
     }
 }
-  
-  
+
