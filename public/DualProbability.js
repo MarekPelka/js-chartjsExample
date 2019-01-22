@@ -42,10 +42,13 @@ class DualProbability {
     getErrorDataset(xMin, xMax, xStep) {
         this.errorDataset = []
         var x = 0
-        // var integral = 0
-        while (x > xMin) {
-            x -= xStep
-        }
+        if (xMin < 0) {
+            // var integral = 0
+            while (x > xMin) {
+                x -= xStep
+            }
+        } else
+            x = xMin
         // '- xStep' just for Chart.js to have domain up to xMax, otherwise it is extended to xMax + 2
         while (x < xMax - xStep) {
 
@@ -62,7 +65,10 @@ class DualProbability {
     }
 
     getThreshold() {
-        if (this.name === "gaussian" || this.name === "laplace")
+        if (this.name === "gaussian" 
+        || this.name === "laplace"
+        || this.name === "rayleigh"
+        || this.name === "maxwell")
             return 0.5
         var accuracy = 0.0001
         var x = 0

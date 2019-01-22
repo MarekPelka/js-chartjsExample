@@ -27,10 +27,14 @@ class Distribution {
     calculate(xMin, xMax, xStep) {
         this.dataset = []
         var x = 0
-        // var integral = 0
-        while (x > xMin) {
-            x -= xStep
-        }
+        if (xMin < 0) {
+            // var integral = 0
+            while (x > xMin) {
+                x -= xStep
+            }
+        } else
+            x = xMin
+        
         // '- xStep' just for Chart.js to have domain up to xMax, otherwise it is extended to xMax + 2
         while (x < xMax - xStep) {
             
@@ -85,21 +89,33 @@ function laplacefn1(x) {
 }
 
 function rayleighfn(x) {
-
+     //console.log("ONE!")
+    x -= this.mu
+    if(this.name.search('One') > 0)
+        x = -x
     if (x >= 0) {
         var sigmaSquared = Math.pow(this.sigma, 2)
         return x / sigmaSquared * Math.exp(-Math.pow(x, 2) / (2 * sigmaSquared))
+    } else if (x < 0 && x > -0.0001) {
+        return 0
     } else {
         return null
-    }
+    }   
 }
 
 function maxwellfn(x) {
+    
+    x -= this.mu
+    if(this.name.search('One') > 0)
+        x = -x
     if (x >= 0) {
         var aSquared = Math.pow(this.a, 2)
         var xSquared = Math.pow(x, 2)
         var a = this.a
         return Math.sqrt(2 / Math.PI) * (xSquared * Math.exp(-xSquared / (2 * aSquared))) / Math.pow(a, 3)
-    } else
+    } else if (x < 0 && x > -0.0001) {
+        return 0
+    } else {
         return null
+    }    
 }
